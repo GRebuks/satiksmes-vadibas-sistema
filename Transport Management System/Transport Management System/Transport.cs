@@ -7,14 +7,14 @@
     class Transport
     {
         // Private variables
-        private string type;
-        private string condition;
+        private string _type;
+        private string _condition;
 
         // Constructor
-        public Transport (string _type, string _condition = "N/A")
+        public Transport (string type, string condition = "N/A")
         {
-            this.type = _type;
-            this.condition = _condition;
+            _type = type;
+            _condition = condition;
         }
 
         // Properties

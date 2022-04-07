@@ -13,15 +13,15 @@ namespace Transport_Management_System
     class Route
     {
         // Private variables
-        private List<string> transportTypes;
-        private List<string> stops;
-        private List<Driver> drivers;
-        private List<Transport> transport;
+        private List<string> _transportTypes;
+        private List<string> _stops;
+        private List<Driver> _drivers;
+        private List<Transport> _transport;
 
         // Constructor
-        public Route(List<string> _transportTypes)
+        public Route(List<string> transportTypes)
         {
-            this.transportTypes = _transportTypes;
+            _transportTypes = transportTypes;
         }
     }
 }

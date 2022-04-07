@@ -9,20 +9,20 @@ namespace Transport_Management_System
     class Driver
     {
         // Private variables
-        private string name;
-        private string surname;
-        private string socialNumber;
-        private DateTime birthDate;
-        private List<string> specialities;
+        private string _name;
+        private string _surname;
+        private string _socialNumber;
+        private DateTime _birthDate;
+        private List<string> _specialities;
 
         // Constructor
-        public Driver(string _name, string _surname, string _social_number, DateTime _birth_date, List<string> _specialities)
+        public Driver(string name, string surname, string social_number, DateTime birth_date, List<string> specialities)
         {
-            this.name = _name;
-            this.surname = _surname;
-            this.socialNumber = _social_number;
-            this.birthDate = _birth_date;
-            this.specialities = _specialities;
+            _name = name;
+            _surname = surname;
+            _socialNumber = social_number;
+            _birthDate = birth_date;
+            _specialities = specialities;
         }
 
         // Properties
