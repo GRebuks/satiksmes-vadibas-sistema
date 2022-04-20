@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 
 namespace Transport_Management_System
@@ -13,8 +10,16 @@ namespace Transport_Management_System
         private string cs = @"server=localhost;userid=root;password=;database=satiksmes_vadiba";
         public DBConnection()
         {
-            conn = new MySqlConnection(cs);
-            conn.Open();
+            try
+            {
+                conn = new MySqlConnection(cs);
+                conn.Open();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error: Could not connect to database.");
+                Console.WriteLine("Error message: " + e.Message);
+            }
         }
 
         public List<List<dynamic>> Select(string table, List<string> columns = null, List<string> options = null)

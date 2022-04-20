@@ -11,17 +11,25 @@ namespace Transport_Management_System
     {
         private const int TAB_SIZE = 8;
         private const int ADD_CHAR_SIZE = 2;
+        private const string TITLE = "Satiksmes vadības sistēma";
+        private readonly List<string> DEFAULT_OPTIONS = new List<string> {"Galvenā lapa", "Atpakaļ"};
 
         private string _tableHeader;
         private List<List<dynamic>> _tableCells;
         private List<int> _columnWidths = new List<int>();
-        //private List<string> _options;
+        private List<string> _options;
 
         // Main method of building a table string
-        public string BuildTable(string tableHeader, List<List<dynamic>> tableCells)
+        public string BuildTable(string tableHeader, List<List<dynamic>> tableCells, List<string> options = null)
         {
             _tableHeader = tableHeader;
             _tableCells = tableCells;
+            _options = options;
+
+            if (options == null)
+            {
+                _options = DEFAULT_OPTIONS;
+            }
 
             int width = TableWidth();
             StringBuilder sb = new StringBuilder();
@@ -29,7 +37,7 @@ namespace Transport_Management_System
             // Table header cell
             BuildLine(width, ref sb);
             BuildCell(_tableHeader, width, ref sb);
-            sb.Append("|\n");
+            sb.AppendLine("|");
             BuildLine(width, ref sb);
 
             // Table cell output
@@ -39,15 +47,31 @@ namespace Transport_Management_System
                 {
                     BuildCell(_tableCells[i][j], _columnWidths[j], ref sb);
                 }
-                sb.Append("|\n");
+                sb.AppendLine("|");
             }
             BuildLine(width, ref sb);
-            // Options go here
+            BuildOptions(_options, ref sb);
             BuildLine(width, ref sb);
 
             return sb.ToString();
         }
+        // Builds a selector table - doesn't output any data
+        public string BuildSelector(string tableHeader, List<string> options)
+        {
+            _tableHeader = tableHeader;
+            _options = options;
 
+            StringBuilder sb = new StringBuilder();
+
+            // Table header cell
+            sb.AppendLine("====================================");
+            sb.AppendLine($"{TITLE}\n\t\t{tableHeader}");
+            sb.AppendLine("------------------------------------");
+            sb.AppendLine("Izvēlieties vēlamo darbību:\n");
+            BuildOptions(options, ref sb);
+            sb.Append("====================================");
+            return sb.ToString();
+        }
         // Calculates and returns the total width of a table
         private int TableWidth()
         {
@@ -116,6 +140,15 @@ namespace Transport_Management_System
             for (int i = 0; i < Math.Ceiling((decimal)width / TAB_SIZE); i++)
             {
                 sb.Append("\t");
+            }
+        }
+        private void BuildOptions(List<string> options, ref StringBuilder sb)
+        {
+            int i = 1;
+            foreach (string option in options)
+            {
+                sb.Append($"[ {i} ] {option}\n");
+                i++;
             }
         }
 

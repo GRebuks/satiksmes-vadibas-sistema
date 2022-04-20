@@ -1,35 +1,53 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Transport_Management_System
 {
     /// <summary>
     /// Contains information about a driver.
     /// </summary>
-    class Driver
+    class Driver : Information
     {
         // Private variables
-        private string _name;
-        private string _surname;
-        private string _socialNumber;
-        private DateTime _birthDate;
-        private List<string> _specialities;
+        private string title = "Vadītāji";
+        private List<string> columnHeaders = new List<string>() {"Vārds", "Uzvārds", "Personas kods", "Dzimšanas diena", "Specialitātes"};
+
+        private string name;
+        private string surname;
+        private string socialNumber;
+        private DateTime birthDate;
+        private List<string> specialities;
 
         // Constructor
-        public Driver(string name, string surname, string social_number, DateTime birth_date, List<string> specialities)
+        public Driver(string name, string surname, string socialNumber, DateTime birthDate, List<string> specialities)
         {
-            _name = name;
-            _surname = surname;
-            _socialNumber = social_number;
-            _birthDate = birth_date;
-            _specialities = specialities;
+            this.name = name;
+            this.surname = surname;
+            this.socialNumber = socialNumber;
+            this.birthDate = birthDate;
+            this.specialities = specialities;
+        }
+
+        public override List<dynamic> GetRow()
+        {
+            List<dynamic> row = new List<dynamic>();
+            row.Add(name);
+            row.Add(surname);
+            row.Add(socialNumber);
+            row.Add(birthDate);
+            row.Add(String.Join(", ", specialities));
+            return row;
         }
 
         // Properties
-        public string Name { get; set; }
-        public string Surname { get; set; }
-        public string SocialNumber { get; set; }
-        public DateTime BirthDate { get; set; }
-        public List<string> Specialities { get; set; }
+        public override string Title 
+        {
+            get { return title; }
+        }
+        public override List<string> ColumnHeaders
+        {
+            get { return columnHeaders; }
+        }
     }
 }

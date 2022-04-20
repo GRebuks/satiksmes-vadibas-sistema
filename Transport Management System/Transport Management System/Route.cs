@@ -7,18 +7,36 @@ namespace Transport_Management_System
     /// Contains information about available routes.
     /// Contains assigned drivers and transport to the specific route object.
     /// </summary>
-    class Route
+    class Route : Information
     {
         // Private variables
-        private List<string> _transportTypes;
-        private List<string> _stops;
-        private List<Driver> _drivers;
-        private List<Transport> _transport;
+        private string title = "Maršruti";
+        private List<string> columnHeaders = new List<string>() { "Vārds", "Uzvārds", "Personas kods", "Dzimšanas diena", "Specialitātes" };
+
+        private string transportType;
+        private List<string> stops;
 
         // Constructor
-        public Route(List<string> transportTypes)
+        public Route(string transportTypes)
         {
-            _transportTypes = transportTypes;
+            this.transportType = transportTypes;
+        }
+        public override List<dynamic> GetRow()
+        {
+            List<dynamic> row = new List<dynamic>();
+            row.Add(transportType);
+            row.Add(String.Join(", ", stops));
+            return row;
+        }
+
+        // Properties
+        public override string Title
+        {
+            get { return title; }
+        }
+        public override List<string> ColumnHeaders
+        {
+            get { return columnHeaders; }
         }
     }
 }
