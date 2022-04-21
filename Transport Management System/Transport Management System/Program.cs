@@ -13,6 +13,7 @@ namespace Transport_Management_System
             Console.OutputEncoding = System.Text.Encoding.UTF8;
             DBConnection db = new DBConnection();
             GetInformation(db);
+            UserInterface.DB = db;
             UserInterface.MainMenu();
             //TableBuilder tb = new TableBuilder();
             //PrintInformation(drivers);

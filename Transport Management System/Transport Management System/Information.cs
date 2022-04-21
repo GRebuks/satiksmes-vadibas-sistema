@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Transport_Management_System
 {
@@ -7,5 +8,6 @@ namespace Transport_Management_System
         public abstract string Title { get; }
         public abstract List<string> ColumnHeaders { get; }
         public abstract List<dynamic> GetRow();
+        public abstract void SetValues(dynamic[] values);
     }
 }
