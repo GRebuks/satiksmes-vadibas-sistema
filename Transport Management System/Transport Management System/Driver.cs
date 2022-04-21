@@ -10,8 +10,8 @@ namespace Transport_Management_System
     class Driver : Information
     {
         // Private variables
-        private string title = "Vadītāji";
-        private List<string> columnHeaders = new List<string>() {"Vārds", "Uzvārds", "Personas kods", "Dzimšanas diena", "Specialitātes"};
+        private static string title = "Vadītāji";
+        public static List<string> columnHeaders = new List<string>() {"Vārds", "Uzvārds", "Personas kods", "Dzimšanas diena", "Specialitātes"};
 
         private string name;
         private string surname;
@@ -29,15 +29,30 @@ namespace Transport_Management_System
             this.specialities = specialities;
         }
 
+        public Driver()
+        {
+            name = "Name";
+            surname = "Surname";
+            socialNumber = "Social number";
+            birthDate = DateTime.MinValue.Date;
+            specialities = new List<string>() {""};
+        }
+
         public override List<dynamic> GetRow()
         {
             List<dynamic> row = new List<dynamic>();
             row.Add(name);
             row.Add(surname);
             row.Add(socialNumber);
-            row.Add(birthDate);
+            row.Add(birthDate.Date);
             row.Add(String.Join(", ", specialities));
             return row;
+        }
+        public override void SetValues(dynamic[] values)
+        {
+            name = values[0];
+            surname = values[1];
+            socialNumber = values[2];
         }
 
         // Properties

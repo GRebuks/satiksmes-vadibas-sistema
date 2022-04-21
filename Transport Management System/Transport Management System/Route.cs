@@ -10,8 +10,8 @@ namespace Transport_Management_System
     class Route : Information
     {
         // Private variables
-        private string title = "Maršruti";
-        private List<string> columnHeaders = new List<string>() { "Vārds", "Uzvārds", "Personas kods", "Dzimšanas diena", "Specialitātes" };
+        private static string title = "Maršruti";
+        private static List<string> columnHeaders = new List<string>() { "Vārds", "Uzvārds", "Personas kods", "Dzimšanas diena", "Specialitātes" };
 
         private string transportType;
         private List<string> stops;
@@ -27,6 +27,10 @@ namespace Transport_Management_System
             row.Add(transportType);
             row.Add(String.Join(", ", stops));
             return row;
+        }
+        public override void SetValues(dynamic[] values)
+        {
+            throw new NotImplementedException();
         }
 
         // Properties

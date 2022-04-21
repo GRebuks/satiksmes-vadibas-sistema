@@ -26,11 +26,6 @@ namespace Transport_Management_System
             _tableCells = tableCells;
             _options = options;
 
-            if (options == null)
-            {
-                _options = DEFAULT_OPTIONS;
-            }
-
             int width = TableWidth();
             StringBuilder sb = new StringBuilder();
 
@@ -50,8 +45,11 @@ namespace Transport_Management_System
                 sb.AppendLine("|");
             }
             BuildLine(width, ref sb);
-            BuildOptions(_options, ref sb);
-            BuildLine(width, ref sb);
+            if(options != null)
+            {
+                BuildOptions(_options, ref sb);
+                BuildLine(width, ref sb);
+            }
 
             return sb.ToString();
         }

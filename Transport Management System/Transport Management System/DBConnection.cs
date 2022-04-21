@@ -67,56 +67,35 @@ namespace Transport_Management_System
             return Select(table, columns, options);
         }
 
-        public MySqlDataReader Insert(string table, dynamic[] data)
+        public MySqlDataReader Insert(string table, List<List<dynamic>> data)
         {
-            MySqlCommand cmd = new MySqlCommand($"INSERT INTO {table} VALUES (\"{String.Join("\", \"", data)}\");", conn);
+            string query = $"INSERT INTO {table} VALUES ";
+            List<string> subquery = new List<string>();
+            List<string> subqueryGroup = new List<string>();
+            subquery.Add("null");
+            foreach (List<dynamic> row in data)
+            {
+                foreach (dynamic cell in row)
+                {
+                    subquery.Add($"\"{cell}\"");
+                }
+                subqueryGroup.Add($"({String.Join(",", subquery)})");
+                subquery = new List<string>();
+                subquery.Add("null");
+            }
+            query += String.Join(",", subqueryGroup);
+            MySqlCommand cmd = new MySqlCommand(query, conn);
             MySqlDataReader read = cmd.ExecuteReader();
             read.Close();
             return read;
         }
 
-        public MySqlDataReader Update(string table, dynamic[,] data, dynamic[,] where)
+        public MySqlDataReader ReplaceAll(string table, List<List<dynamic>> data)
         {
-            dynamic updateData = "";
-            dynamic whereData = "";
-
-            for (int i = 0; i < data.Length - 1; i++)
-            {
-                dynamic tempData = String.Join("=", new dynamic[] { data[i, 0], "\"" + data[i, 1] + "\"" });
-                updateData += tempData + ",";
-            }
-
-            for (int i = 0; i < where.Length - 1; i++)
-            {
-                dynamic tempData = String.Join("=", new dynamic[] { where[i, 0], where[i, 1] });
-                Console.WriteLine(tempData);
-                whereData += tempData + ",";
-            }
-            updateData = updateData.Remove(updateData.Length - 1, 1);
-            whereData = whereData.Remove(whereData.Length - 1, 1);
-            MySqlCommand cmd = new MySqlCommand($"UPDATE {table} SET {updateData} WHERE {whereData};", conn);
+            MySqlCommand cmd = new MySqlCommand($"DELETE FROM {table} WHERE 1", conn);
             MySqlDataReader read = cmd.ExecuteReader();
             read.Close();
-            return read;
-        }
-
-        public MySqlDataReader Delete(string table, dynamic[,] where)
-        {
-            dynamic whereData = "";
-
-            for (int i = 0; i < where.Length - 1; i++)
-            {
-                dynamic tempData = String.Join("=", new dynamic[] { where[i, 0], where[i, 1] });
-                Console.WriteLine(tempData);
-                whereData += tempData + ",";
-            }
-
-            whereData = whereData.Remove(whereData.Length - 1, 1);
-            MySqlCommand cmd = new MySqlCommand($"DELETE FROM {table} WHERE {whereData};", conn);
-            MySqlDataReader read = cmd.ExecuteReader();
-            read.Close();
-
-            return read;
+            return Insert(table, data);
         }
 
         ~DBConnection() {
