@@ -14,10 +14,13 @@ namespace Transport_Management_System
     {
         // Private variables
         private static string title = "Maršruti";
-        private static List<string> columnHeaders = new List<string>() { "Vārds", "Uzvārds", "Personas kods", "Dzimšanas diena", "Specialitātes" };
+        private static List<string> columnHeaders = new List<string>() { "Nosaukums", "Pieturas", "Laiks starp pieturām", "Maršrutu laiki"};
 
+        private string name;
         private string transportType;
         private List<string> stops;
+        private List<DateTime> stopTimeDifference;
+        private List<DateTime> routeStartTime;
 
         // Constructor
         public Route(string transportTypes)

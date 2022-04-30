@@ -19,6 +19,9 @@ namespace Transport_Management_System
         private List<int> _columnWidths = new List<int>();
         private List<string> _options;
 
+        // Data filtration and sorting
+        private List<string> criteria = new List<string>();
+
         // Main method of building a table string
         public string BuildTable(string tableHeader, List<List<dynamic>> tableCells, List<string> options = null)
         {
@@ -28,7 +31,6 @@ namespace Transport_Management_System
 
             int width = TableWidth();
             StringBuilder sb = new StringBuilder();
-
             // Table header cell
             BuildLine(width, ref sb);
             BuildCell(_tableHeader, width, ref sb);
@@ -50,7 +52,7 @@ namespace Transport_Management_System
                 BuildOptions(_options, ref sb);
                 BuildLine(width, ref sb);
             }
-
+            _columnWidths = new List<int>();
             return sb.ToString();
         }
         // Builds a selector table - doesn't output any data
@@ -105,14 +107,14 @@ namespace Transport_Management_System
         // Builds a basic line with the specified width
         private void BuildLine(int width, ref StringBuilder sb)
         {
-            for (int i = 1; i <= width; i++)
+            for (int i = 1; i <= width+1; i++)
             {
-                if (i == 1 || i == width)
+                if (i == 1 || i == width+1)
                 {
-                    sb.Append("+");
+                    sb.Append('+');
                     continue;
                 }
-                sb.Append("-");
+                sb.Append('-');
             }
             sb.Append("\n");
         }
@@ -126,7 +128,7 @@ namespace Transport_Management_System
 
             // When these values are specific, the table breaks out of shape
             // These checks prevent that from happening, excluding ADD_CHAR_SIZE const from the difference
-            if (cell.ToString().Length == 7 || cell.ToString().Length == 8 || difference == 9)
+            if (cell.ToString().Length % 8 == 7 || cell.ToString().Length % 8 == 0 || difference % 9 == 0)
                 FillEmpty(difference - ADD_CHAR_SIZE, ref sb);
             else
                 FillEmpty(difference, ref sb);

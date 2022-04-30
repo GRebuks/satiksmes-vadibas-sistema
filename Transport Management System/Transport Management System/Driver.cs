@@ -25,7 +25,7 @@ namespace Transport_Management_System
             this.name = name;
             this.surname = surname;
             this.socialNumber = socialNumber;
-            this.birthDate = birthDate;
+            this.birthDate = birthDate.Date;
             this.specialities = specialities;
         }
 
@@ -44,7 +44,7 @@ namespace Transport_Management_System
             row.Add(name);
             row.Add(surname);
             row.Add(socialNumber);
-            row.Add(birthDate.Date);
+            row.Add(birthDate.ToString("yyyy-MM-dd"));
             row.Add(String.Join(", ", specialities));
             return row;
         }
@@ -53,6 +53,9 @@ namespace Transport_Management_System
             name = values[0];
             surname = values[1];
             socialNumber = values[2];
+            birthDate = Convert.ToDateTime(values[3]);
+            string[] specs = values[4].Split(", ");
+            specialities = specs.ToList();
         }
 
         // Properties
