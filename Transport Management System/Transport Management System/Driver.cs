@@ -57,7 +57,11 @@ namespace Transport_Management_System
             string[] specs = values[4].Split(", ");
             specialities = specs.ToList();
         }
-
+        // Deconstructor
+        ~Driver()
+        {
+            System.Diagnostics.Debug.WriteLine("A driver has been deconstructed.");
+        }
         // Properties
         public override string Title 
         {

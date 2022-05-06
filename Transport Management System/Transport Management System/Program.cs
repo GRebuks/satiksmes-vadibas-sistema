@@ -16,9 +16,6 @@ namespace Transport_Management_System
             GetInformation(db);
             UserInterface.DB = db;
             UserInterface.MainMenu();
-            //TableBuilder tb = new TableBuilder();
-            //PrintInformation(drivers);
-            //Console.WriteLine(tb.BuildTable("Vadītāji", ObjectToDynamic(drivers)));
         }
         static void GetInformation(DBConnection db)
         {
@@ -28,18 +25,21 @@ namespace Transport_Management_System
             data = db.Select("Route");
             foreach (List<dynamic> row in data)
             {
-                string speciality = row[5];
-                routes.Add(new Route(speciality));
+                string name = row[1];
+                string transportType = row[2];
+                string stopString = row[3];
+                string stopTimeDifferenceString = row[4];
+                string routeStartTimeString = row[5];
+                routes.Add(new Route(name, transportType, stopString, stopTimeDifferenceString, routeStartTimeString));
             }
 
             // Gets information about transport from database
             data = db.Select("Transport");
             foreach (List<dynamic> row in data)
             {
-                int id = row[0];
                 string transportType = row[1];
                 string condition = row[2];
-                Information new_transport = new Transport(id, transportType, condition);
+                Information new_transport = new Transport(transportType, condition);
                 transport.Add(new_transport);
             }
 

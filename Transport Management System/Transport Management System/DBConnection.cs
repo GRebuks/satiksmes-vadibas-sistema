@@ -7,7 +7,7 @@ namespace Transport_Management_System
     class DBConnection
     {
         private MySqlConnection conn;
-        private string cs = @"server=localhost;userid=root;password=;database=satiksmes_vadiba";
+        private string cs = @"server=localhost;port=3306;userid=root;password=;database=satiksmes_vadiba";
         public DBConnection()
         {
             try

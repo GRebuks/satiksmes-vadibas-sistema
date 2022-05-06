@@ -38,11 +38,28 @@ namespace Transport_Management_System
             BuildLine(width, ref sb);
 
             // Table cell output
+            int max = 0;
+            foreach(List<dynamic> cell in _tableCells)
+            {
+                int length = TransposeTable().ToArray().GetLength(0);
+                if (length > max)
+                {
+                    max = length;
+                }
+            }
             for (int i = 0; i < _tableCells.ToArray().GetLength(0); i++)
             {
-                for (int j = 0; j < _tableCells[0].ToArray().GetLength(0); j++)
+                for (int j = 0; j < max; j++)
                 {
-                    BuildCell(_tableCells[i][j], _columnWidths[j], ref sb);
+                    try
+                    {
+                        BuildCell(_tableCells[i][j], _columnWidths[j], ref sb);
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                        BuildCell("", _columnWidths[j], ref sb);
+                        System.Diagnostics.Debug.WriteLine("BT");
+                    }
                 }
                 sb.AppendLine("|");
             }
@@ -128,7 +145,7 @@ namespace Transport_Management_System
 
             // When these values are specific, the table breaks out of shape
             // These checks prevent that from happening, excluding ADD_CHAR_SIZE const from the difference
-            if (cell.ToString().Length % 8 == 7 || cell.ToString().Length % 8 == 0 || difference % 9 == 0)
+            if (cell.ToString().Length % 8 == 0 || cell.ToString().Length % 8 == 0 || difference % 8 == 1)
                 FillEmpty(difference - ADD_CHAR_SIZE, ref sb);
             else
                 FillEmpty(difference, ref sb);
@@ -161,7 +178,15 @@ namespace Transport_Management_System
                 List<dynamic> col = new List<dynamic>();
                 for (int j = 0; j < _tableCells.Count; j++)
                 {
-                    col.Add(_tableCells[j][i]);
+                    try
+                    {
+                        col.Add(_tableCells[j][i]);
+                    }
+                    catch(ArgumentOutOfRangeException)
+                    {
+                        col.Add("");
+                        System.Diagnostics.Debug.WriteLine("transpose");
+                    }
                 }
                 transposedTable.Add(col);
             }

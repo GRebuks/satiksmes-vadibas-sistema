@@ -10,16 +10,14 @@ namespace Transport_Management_System
     {
         // Private variables
         private static string title = "Transporti";
-        public static List<string> columnHeaders = new List<string>() {"ID","Tips", "Stāvoklis" };
+        public static List<string> columnHeaders = new List<string>() {"Tips", "Stāvoklis" };
 
         private string type;
         private string condition;
-        private int id;
 
         // Constructor
-        public Transport (int id, string type, string condition = "N/A")
+        public Transport (string type, string condition = "N/A")
         {
-            this.id = id;
             this.type = type;
             this.condition = condition;
         }
@@ -33,7 +31,6 @@ namespace Transport_Management_System
         public override List<dynamic> GetRow()
         {
             List<dynamic> row = new List<dynamic>();
-            row.Add(id);
             row.Add(type);
             row.Add(condition);
             return row;

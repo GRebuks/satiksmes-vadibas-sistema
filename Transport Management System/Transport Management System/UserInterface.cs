@@ -34,7 +34,7 @@ namespace Transport_Management_System
                     break;
                 case 2:
                     db.ReplaceAll("driver", ObjectToDynamic(drivers, false));
-                    db.ReplaceAll("route", ObjectToDynamic(routes, false));
+                    db.ReplaceAll("route", ObjectToDynamic(routes, false, true));
                     db.ReplaceAll("transport", ObjectToDynamic(transport, false));
                     MainMenu();
                     break;
@@ -66,13 +66,18 @@ namespace Transport_Management_System
                     break;
                 case 3:
                     viewingType = typeof(Route);
-                    PrintInformation(routes, DEFAULT_OPTIONS);
+                    List<string> route_options = new List<string>();
+                    route_options.Add("Skatīt sīkāk...");
+                    route_options.AddRange(DEFAULT_OPTIONS);
+                    PrintInformation(routes, route_options);
                     break;
                 case 4:
                     MainMenu();
                     break;
                 default:
-                    throw new NotImplementedException();
+                    Console.WriteLine("Nepareiza ievade!");
+                    TableSelection();
+                    break;
             }
         }
 
@@ -81,16 +86,27 @@ namespace Transport_Management_System
         {
             TableBuilder tb = new TableBuilder();
             int input = Input(optionCount: DEFAULT_OPTIONS.Count);
+            int defaultOptionPosition = options.Count - DEFAULT_OPTIONS.Count + 1;
             switch (input)
             {
-                case 1:
+                // "var value when value" izmantots, lai ievietotu ne-konstantas vērtības iekš "switch"
+                case var value when value == defaultOptionPosition:
                     Console.Clear();
+
+                    // Izveido jaunu objektu ar saglabātā tipa "viewingType" tipu
+                    // Objekts tiek saglabāts iekš "Information" tipa references
                     Information newObject = (Information)Activator.CreateInstance(viewingType);
+
+                    // Reference tiek saglabāta sarakstā
                     info.Add(newObject);
-                    EditObject(newObject);
+
+                    // Izveidotā objekta vērtības tiek rediģētas "EditObject" metodē
+                    EditObject(newObject, true, info);
+
+                    // Visas informācijas izvade pēc jauna objekta izveides
                     PrintInformation(info, options, memberName);
                     break;
-                case 2:
+                case var value when value == defaultOptionPosition + 1:
                     Console.WriteLine("Ievadiet kārtas numuru rindai, kuru vēlaties dzēst:");
                     input = Input(false);
                     Console.Clear();
@@ -106,7 +122,7 @@ namespace Transport_Management_System
 
                     PrintInformation(info, options, memberName);
                     break;
-                case 3:
+                case var value when value == defaultOptionPosition + 2:
                     Console.WriteLine("Ievadiet kārtas numuru rindai, kuru vēlaties rediģēt:");
                     input = Input(false);
                     Console.Clear();
@@ -122,24 +138,38 @@ namespace Transport_Management_System
 
                     PrintInformation(info, options, memberName);
                     break;
-                case 4:
+                case var value when value == defaultOptionPosition + 3:
                     Console.WriteLine("Ievadiet kolonnas kārtas numuru, pēc kuras vēlaties kārtot datus:");
                     input = Input(false);
                     Console.Clear();
-                    Console.WriteLine(input);
                     List<List<dynamic>> sortList = SortListByColumn(ObjectToDynamic(info, false), input - 1);
                     Console.WriteLine(tb.BuildTable(info[0].Title, sortList, options));
                     AskInput(info, options, memberName, sortList);
                     break;
-                case 5:
+                case var value when value == defaultOptionPosition + 4:
                     Redirect(memberName);
                     break;
-                case 6:
+                case var value when value == defaultOptionPosition + 5:
                     Console.Clear();
                     MainMenu();
                     break;
                 default:
-                    Console.WriteLine("Nepareiza ievade!");
+                    // Explicit case operation
+                    if (options != DEFAULT_OPTIONS)
+                    {
+                        if (viewingType == typeof(Route) && input == 1)
+                        {
+                            Console.WriteLine("Ievadiet kārtas numuru rindai, kuru vēlaties apskatīt:");
+                            input = Input(false);
+                            Console.Clear();
+                            Console.WriteLine(tb.BuildTable(info[0].Title, info[input - 1].GetSpecific(), DEFAULT_OPTIONS));
+                            AskInput(info, DEFAULT_OPTIONS, memberName);
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Nepareiza ievade!");
+                    }
                     break;
             }
         }
@@ -151,16 +181,34 @@ namespace Transport_Management_System
             AskInput(info, options, memberName);
         }
         // Edits a single object of class Information, is used in creating new objects as well
-        static void EditObject(Information editObject, [CallerMemberName] string memberName = "")
+        static void EditObject(Information editObject, bool isNewObject = false, List<Information> info = null, [CallerMemberName] string memberName = "")
         {
             TableBuilder tb = new TableBuilder();
             bool editing = true;
             int count = editObject.ColumnHeaders.Count;
-            dynamic[] values = editObject.GetRow().ToArray();
+            dynamic[] values;
+            if (editObject is Route)
+            {
+                values = editObject.GetValues().ToArray();
+            } 
+            else
+            {
+                values = editObject.GetRow().ToArray();
+            }
+            // Saves information in case the user cancels all changes
+            dynamic[] initialValues = new dynamic[values.Length];
+            Array.Copy(values, initialValues, values.Length);
             do
             {
                 Console.Clear();
-                Console.WriteLine(tb.BuildTable(editObject.Title + " - Rediģēšana", ObjectToDynamic(editObject)));
+                if (editObject is Route)
+                {
+                    Console.WriteLine(tb.BuildTable(editObject.Title + " - Rediģēšana", ObjectToSpecificDynamic(editObject)));
+                }
+                else
+                {
+                    Console.WriteLine(tb.BuildTable(editObject.Title + " - Rediģēšana", ObjectToDynamic(editObject)));
+                }
                 Console.WriteLine("Ievadiet kolonnas kārtas numuru, lai rediģētu tā vērtību");
                 Console.WriteLine($"[ {count + 1} ] Apstiprināt");
                 Console.WriteLine($"[ {count + 2} ] Atpakaļ");
@@ -175,6 +223,13 @@ namespace Transport_Management_System
                     string answer = Console.ReadLine();
                     if (answer.ToLower() == "y")
                     {
+                        if (isNewObject)
+                        {
+                            info.Remove(editObject);
+                            Redirect(memberName);
+                            return;
+                        }
+                        editObject.SetValues(initialValues);
                         Redirect(memberName);
                         return;
                     }
@@ -208,7 +263,7 @@ namespace Transport_Management_System
         static List<List<dynamic>> SortListByColumn(List<List<dynamic>> sortList, int columnIndex)
         {
             int numberOfChanges = 0;
-            for(int i = 0; i < sortList.Count() - 1; i++)
+            for(int i = 1; i < sortList.Count() - 1; i++)
             {
                 if (sortList[i][columnIndex] is string)
                 {
@@ -238,13 +293,23 @@ namespace Transport_Management_System
         }
 
         // Creates a dynamic two-dimensional list from list of Information class objects to be used elsewhere
-        static List<List<dynamic>> ObjectToDynamic(List<Information> objectTable, bool includeHeaders = true)
+        static List<List<dynamic>> ObjectToDynamic(List<Information> objectTable, bool includeHeaders = true, bool isSpecific = false)
         {
             List<List<dynamic>> dynamicTable = new List<List<dynamic>>();
-            dynamicTable.Add(objectTable[0].ColumnHeaders.Cast<dynamic>().ToList());
+            if(includeHeaders)
+            {
+                dynamicTable.Add(objectTable[0].ColumnHeaders.Cast<dynamic>().ToList());
+            }
             foreach (Information obj in objectTable)
             {
-                dynamicTable.Add(obj.GetRow());
+                if (isSpecific)
+                {
+                    dynamicTable.Add(obj.GetValues());
+                }
+                else
+                {
+                    dynamicTable.Add(obj.GetRow());
+                }
             }
             return dynamicTable;
         }
@@ -258,10 +323,13 @@ namespace Transport_Management_System
             return dynamicTable;
         }
 
-        // Converts from a string list to a dynamic list
-        static List<dynamic> StringToDynamic(List<string> stringList)
+        // Creates a dynamic two-dimensional list specifically for Route class, used to output specific information of a single Route object
+        static List<List<dynamic>> ObjectToSpecificDynamic(Information obj)
         {
-            return stringList.Cast<dynamic>().ToList();
+            List<List<dynamic>> dynamicTable = new List<List<dynamic>>();
+            dynamicTable.Add(obj.ColumnHeaders.Cast<dynamic>().ToList());
+            dynamicTable.AddRange(obj.GetSpecific());
+            return dynamicTable;
         }
 
         // Asks the user for input and checks if input is valid
