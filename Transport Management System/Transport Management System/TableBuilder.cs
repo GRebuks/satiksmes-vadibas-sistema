@@ -58,7 +58,6 @@ namespace Transport_Management_System
                     catch (ArgumentOutOfRangeException)
                     {
                         BuildCell("", _columnWidths[j], ref sb);
-                        System.Diagnostics.Debug.WriteLine("BT");
                     }
                 }
                 sb.AppendLine("|");
@@ -185,7 +184,6 @@ namespace Transport_Management_System
                     catch(ArgumentOutOfRangeException)
                     {
                         col.Add("");
-                        System.Diagnostics.Debug.WriteLine("transpose");
                     }
                 }
                 transposedTable.Add(col);

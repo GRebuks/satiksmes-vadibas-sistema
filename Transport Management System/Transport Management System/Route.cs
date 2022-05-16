@@ -12,8 +12,10 @@ namespace Transport_Management_System
     {
         // Private variables
         private static string title = "Maršruti";
-        private static List<string> columnHeaders = new List<string>() { "Nosaukums", "Transporta tips", "Pieturas", "Laiks starp pieturām", "Maršrutu laiki"};
+        private static List<string> columnHeaders = new List<string>() {"Nosaukums", "Transporta tips", "Pieturas", "Laiks starp pieturām", "Maršrutu laiki"};
+        private static List<string> idColumnHeaders = new List<string>() {"ID", "Nosaukums", "Transporta tips", "Pieturas", "Laiks starp pieturām", "Maršrutu laiki" };
 
+        private int id;
         private string name;
         private string transportType;
         private List<string> stops;
@@ -21,8 +23,9 @@ namespace Transport_Management_System
         private List<DateTime> routeStartTime = new List<DateTime>();
 
         // Constructor
-        public Route(string name, string transportType, string stopString, string stopTimeDifferenceString, string routeStartTimeString)
+        public Route(int id, string name, string transportType, string stopString, string stopTimeDifferenceString, string routeStartTimeString)
         {
+            this.id = id;
             this.name = name;
             this.transportType = transportType;
             stops = stopString.Split(", ").ToList();
@@ -38,6 +41,7 @@ namespace Transport_Management_System
 
         public Route()
         {
+            id = Program.GetRoutes[Program.GetRoutes.Count - 1].ID + 1;
             name = "Sākuma pietura - galamērķis";
             transportType = "Transporta tips";
             stops = new List<string>();
@@ -49,6 +53,7 @@ namespace Transport_Management_System
         public override List<dynamic> GetRow()
         {
             List<dynamic> row = new List<dynamic>();
+            row.Add(id);
             row.Add(name);
             row.Add(transportType);
             row.Add(stops.Count);
@@ -101,11 +106,6 @@ namespace Transport_Management_System
                 row.Add("");
                 row.Add("");
             }
-            foreach (string stop in stops)
-            {
-                System.Diagnostics.Debug.WriteLine(stop);
-            }
-            System.Diagnostics.Debug.WriteLine($"Count = {stops.Count}, Length = {stops.ToArray().GetLength(0)}");
             return table;
         }
         public override void SetValues(dynamic[] values)
@@ -131,9 +131,21 @@ namespace Transport_Management_System
         {
             get { return title; }
         }
+        public override int ID
+        {
+            get { return id; }
+        }
+        public override string TransportType
+        {
+            get { return transportType; }
+        }
         public override List<string> ColumnHeaders
         {
             get { return columnHeaders; }
+        }
+        public override List<string> IDColumnHeaders
+        {
+            get { return idColumnHeaders; }
         }
     }
 }

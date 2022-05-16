@@ -11,8 +11,9 @@ namespace Transport_Management_System
     {
         // Private variables
         private static string title = "Vadītāji";
-        public static List<string> columnHeaders = new List<string>() {"Vārds", "Uzvārds", "Personas kods", "Dzimšanas diena", "Specialitātes"};
+        public static List<string> columnHeaders = new List<string>() {"ID", "Vārds", "Uzvārds", "Personas kods", "Dzimšanas diena", "Specialitātes"};
 
+        private int id;
         private string name;
         private string surname;
         private string socialNumber;
@@ -20,8 +21,9 @@ namespace Transport_Management_System
         private List<string> specialities;
 
         // Constructor
-        public Driver(string name, string surname, string socialNumber, DateTime birthDate, List<string> specialities)
+        public Driver(int id, string name, string surname, string socialNumber, DateTime birthDate, List<string> specialities)
         {
+            this.id = id;
             this.name = name;
             this.surname = surname;
             this.socialNumber = socialNumber;
@@ -31,6 +33,7 @@ namespace Transport_Management_System
 
         public Driver()
         {
+            id = Program.GetDrivers[Program.GetDrivers.Count - 1].ID + 1;
             name = "Name";
             surname = "Surname";
             socialNumber = "Social number";
@@ -41,6 +44,7 @@ namespace Transport_Management_System
         public override List<dynamic> GetRow()
         {
             List<dynamic> row = new List<dynamic>();
+            row.Add(id);
             row.Add(name);
             row.Add(surname);
             row.Add(socialNumber);
@@ -50,11 +54,12 @@ namespace Transport_Management_System
         }
         public override void SetValues(dynamic[] values)
         {
-            name = values[0];
-            surname = values[1];
-            socialNumber = values[2];
-            birthDate = Convert.ToDateTime(values[3]);
-            string[] specs = values[4].Split(", ");
+            id = values[0];
+            name = values[1];
+            surname = values[2];
+            socialNumber = values[3];
+            birthDate = Convert.ToDateTime(values[4]);
+            string[] specs = values[5].Split(", ");
             specialities = specs.ToList();
         }
         // Deconstructor
@@ -67,9 +72,17 @@ namespace Transport_Management_System
         {
             get { return title; }
         }
+        public override int ID
+        {
+            get { return id; }
+        }
         public override List<string> ColumnHeaders
         {
             get { return columnHeaders; }
+        }
+        public override List<string> Specialities
+        {
+            get { return specialities; }
         }
     }
 }

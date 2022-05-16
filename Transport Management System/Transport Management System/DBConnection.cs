@@ -72,7 +72,13 @@ namespace Transport_Management_System
             string query = $"INSERT INTO {table} VALUES ";
             List<string> subquery = new List<string>();
             List<string> subqueryGroup = new List<string>();
-            subquery.Add("null");
+            bool hasID = true;
+            try
+            {
+                Convert.ToInt32(data[0][0]);
+            }
+            catch { hasID = false; }
+            if (!hasID) subquery.Add("null");
             foreach (List<dynamic> row in data)
             {
                 foreach (dynamic cell in row)
@@ -81,9 +87,10 @@ namespace Transport_Management_System
                 }
                 subqueryGroup.Add($"({String.Join(",", subquery)})");
                 subquery = new List<string>();
-                subquery.Add("null");
+                if (!hasID) subquery.Add("null");
             }
             query += String.Join(",", subqueryGroup);
+            System.Diagnostics.Debug.WriteLine(query);
             MySqlCommand cmd = new MySqlCommand(query, conn);
             MySqlDataReader read = cmd.ExecuteReader();
             read.Close();

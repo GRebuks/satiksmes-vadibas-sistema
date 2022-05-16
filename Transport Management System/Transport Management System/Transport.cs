@@ -10,19 +10,22 @@ namespace Transport_Management_System
     {
         // Private variables
         private static string title = "Transporti";
-        public static List<string> columnHeaders = new List<string>() {"Tips", "Stāvoklis" };
+        public static List<string> columnHeaders = new List<string>() {"ID", "Tips", "Stāvoklis" };
 
+        private int id;
         private string type;
         private string condition;
 
         // Constructor
-        public Transport (string type, string condition = "N/A")
+        public Transport (int id, string type, string condition = "N/A")
         {
+            this.id = id;
             this.type = type;
             this.condition = condition;
         }
         public Transport()
         {
+            id = Program.GetTransport[Program.GetTransport.Count - 1].ID + 1;
             type = "Type";
             condition = "N/A";
         }
@@ -31,20 +34,31 @@ namespace Transport_Management_System
         public override List<dynamic> GetRow()
         {
             List<dynamic> row = new List<dynamic>();
+            row.Add(id);
             row.Add(type);
             row.Add(condition);
             return row;
         }
         public override void SetValues(dynamic[] values)
         {
-            type = values[0];
-            condition = values[1];
+            id = values[0];
+            type = values[1];
+            condition = values[2];
         }
 
         // Properties
-        public string Type { get; set; }
-        public string Condition { get; set; }
-
+        public override string TransportType
+        {
+            get { return type; }
+        }
+        public override string TransportCondition
+        {
+            get { return condition; }
+        }
+        public override int ID
+        {
+            get { return id; }
+        }
         public override string Title
         {
             get { return title; }

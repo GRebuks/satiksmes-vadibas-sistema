@@ -6,8 +6,10 @@ namespace Transport_Management_System
     {
         public abstract string Title { get; }
         public abstract List<string> ColumnHeaders { get; }
+        public virtual List<string> IDColumnHeaders { get; }
+        public abstract int ID { get; }
         public abstract List<dynamic> GetRow();
-        public virtual List<List<dynamic>> GetSpecific() 
+        public virtual List<List<dynamic>> GetSpecific()
         {
             return new List<List<dynamic>>();
         }
@@ -16,5 +18,10 @@ namespace Transport_Management_System
             return new List<dynamic>();
         }
         public abstract void SetValues(dynamic[] values);
+
+        // Statistics properties
+        public virtual List<string> Specialities { get; }
+        public virtual string TransportType { get; }
+        public virtual string TransportCondition { get; }
     }
 }
